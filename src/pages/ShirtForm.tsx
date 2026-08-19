@@ -401,10 +401,6 @@ export function ShirtForm() {
                   Clique no quadrado colorido para abrir a paleta, ou digite o código da cor no formato HEX ou RGB.
                 </p>
               </div>
-              <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="notes">Dados Históricos</Label>
-                <Textarea id="notes" {...register('notes')} placeholder="Detalhes históricos ou adicionais sobre a camisa..." />
-              </div>
               <div className="flex flex-col space-y-2 sm:col-span-2">
                 <div className="flex items-center space-x-2">
                   <input

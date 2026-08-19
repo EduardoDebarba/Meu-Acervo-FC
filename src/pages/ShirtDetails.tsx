@@ -217,15 +217,6 @@ export function ShirtDetails() {
               </div>
             </CardContent>
           </Card>
-
-          {shirt.notes && (
-            <div>
-              <h3 className="mb-2 text-lg font-bold text-foreground">Dados Históricos</h3>
-              <p className="whitespace-pre-wrap rounded-lg bg-muted/50 p-4 text-muted-foreground">
-                {shirt.notes}
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>
