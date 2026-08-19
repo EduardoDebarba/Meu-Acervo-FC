@@ -15,6 +15,7 @@ export function Collection() {
   const [shirts, setShirts] = useState<Shirt[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('recent');
 
   useEffect(() => {
     if (!user) return;
@@ -40,12 +41,40 @@ export function Collection() {
     return unsubscribe;
   }, [user]);
 
-  const filteredAndSortedShirts = shirts
+  const filteredAndSortedShirts = [...shirts]
     .filter(shirt => 
       shirt.team.toLowerCase().includes(searchTerm.toLowerCase()) ||
       shirt.season.toLowerCase().includes(searchTerm.toLowerCase()) ||
       shirt.brand.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    )
+    .sort((a, b) => {
+      if (sortBy === 'recent') {
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      }
+      if (sortBy === 'expensive') {
+        return (b.price || 0) - (a.price || 0);
+      }
+      if (sortBy === 'alphabetical') {
+        return a.team.localeCompare(b.team);
+      }
+      if (sortBy === 'season') {
+        const parseYear = (s: string) => {
+          if (!s) return 0;
+          const match = s.match(/\d+/);
+          if (!match) return 0;
+          let y = parseInt(match[0], 10);
+          if (y < 100) y += y <= 50 ? 2000 : 1900;
+          return y;
+        };
+        const yearA = parseYear(a.season);
+        const yearB = parseYear(b.season);
+        if (yearA !== yearB) {
+          return yearB - yearA;
+        }
+        return b.season.localeCompare(a.season);
+      }
+      return 0;
+    });
 
   if (loading) {
     return (
@@ -68,15 +97,33 @@ export function Collection() {
         </Link>
       </div>
 
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row">
-        <div className="relative flex-1">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-12 w-full">
+        <div className="relative sm:col-span-8 md:col-span-9 lg:col-span-9 xl:col-span-10 w-full">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Buscar por time, temporada ou marca..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9"
+            className="pl-9 w-full"
           />
+        </div>
+        <div className="sm:col-span-4 md:col-span-3 lg:col-span-3 xl:col-span-2 w-full">
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="h-10 w-full">
+              <SelectValue placeholder="Ordenar por">
+                {sortBy === 'recent' && 'Mais Recentes'}
+                {sortBy === 'expensive' && 'Mais Caras'}
+                {sortBy === 'alphabetical' && 'Ordem Alfabética'}
+                {sortBy === 'season' && 'Por Temporada'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recent">Mais Recentes</SelectItem>
+              <SelectItem value="expensive">Mais Caras</SelectItem>
+              <SelectItem value="alphabetical">Ordem Alfabética</SelectItem>
+              <SelectItem value="season">Por Temporada</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
