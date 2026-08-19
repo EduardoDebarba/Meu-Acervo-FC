@@ -17,22 +17,79 @@ export function Layout() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Mobile menu */}
-      <div className="lg:hidden">
-        <div className="flex items-center justify-between bg-card border-b border-border px-4 py-3 text-foreground">
-          <span className="text-xl font-bold tracking-tight">Meu Armário</span>
-          <div className="flex items-center gap-2">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Top Navbar */}
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-card">
+        <div className="flex h-16 items-center justify-between w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          {/* Left side: Logo and Title */}
+          <div className="flex items-center gap-3 w-1/4">
+            <img src="/logo.png" alt="Logo" className="h-10 w-10 rounded-full" />
+            <span className="text-xl font-bold tracking-tight text-foreground hidden sm:block">Meu Acervo FC</span>
+          </div>
+
+          {/* Center: Navigation (Desktop) */}
+          <nav className="hidden md:flex flex-1 items-center justify-center gap-2">
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={cn(
+                    "flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    isActive 
+                      ? "bg-accent text-accent-foreground" 
+                      : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                  )}
+                >
+                  <Icon size={18} />
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Right side: Actions */}
+          <div className="flex items-center justify-end gap-3 w-1/4">
             <ThemeToggle />
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            
+            <div className="hidden md:flex items-center gap-3 border-l border-border pl-4 ml-2">
+              <img
+                className="h-8 w-8 rounded-full"
+                src={user?.photoURL || 'https://via.placeholder.com/150'}
+                alt=""
+                referrerPolicy="no-referrer"
+              />
+              <span className="text-sm font-medium text-foreground max-w-[120px] truncate">
+                {user?.displayName || 'Usuário'}
+              </span>
+              <button
+                onClick={logout}
+                className="flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                title="Sair"
+              >
+                <LogOut size={18} />
+                <span>Sair</span>
+              </button>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="flex md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+              >
+                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </div>
-        
+
+        {/* Mobile menu panel */}
         {isMobileMenuOpen && (
-          <div className="absolute inset-x-0 top-[52px] z-50 bg-card border-b border-border px-4 pb-4 shadow-xl">
-            <nav className="flex flex-col space-y-2 mt-2">
+          <div className="md:hidden border-t border-border bg-card px-4 pt-2 pb-4 shadow-lg">
+            <nav className="flex flex-col space-y-1">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
@@ -42,8 +99,10 @@ export function Layout() {
                     to={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={cn(
-                      "flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                      isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                      "flex items-center space-x-3 rounded-md px-3 py-2 text-base font-medium transition-colors",
+                      isActive 
+                        ? "bg-accent text-accent-foreground" 
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                     )}
                   >
                     <Icon size={20} />
@@ -51,89 +110,38 @@ export function Layout() {
                   </Link>
                 );
               })}
-              <button
-                onClick={() => {
-                  logout();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-              >
-                <LogOut size={20} />
-                <span>Sair</span>
-              </button>
+              <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={user?.photoURL || 'https://via.placeholder.com/150'}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                  />
+                  <span className="text-sm font-medium text-foreground">
+                    {user?.displayName || 'Usuário'}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+                >
+                  <LogOut size={20} />
+                  <span>Sair</span>
+                </button>
+              </div>
             </nav>
           </div>
         )}
-      </div>
-
-      {/* Desktop sidebar */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-border lg:bg-card lg:pt-5 lg:pb-4">
-        <div className="flex flex-shrink-0 items-center justify-between px-6">
-          <span className="text-2xl font-bold tracking-tight text-foreground">Meu Armário</span>
-          <ThemeToggle />
-        </div>
-        <div className="mt-8 flex flex-1 flex-col overflow-y-auto">
-          <nav className="flex-1 space-y-1 px-4">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={cn(
-                    "group flex items-center space-x-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                    isActive 
-                      ? "bg-accent text-accent-foreground" 
-                      : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
-                  )}
-                >
-                  <Icon 
-                    size={20} 
-                    className={cn(
-                      "flex-shrink-0",
-                      isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
-                    )} 
-                  />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-        <div className="flex flex-shrink-0 border-t border-border p-4">
-          <div className="group block w-full flex-shrink-0">
-            <div className="flex items-center">
-              <div>
-                <img
-                  className="inline-block h-9 w-9 rounded-full"
-                  src={user?.photoURL || 'https://via.placeholder.com/150'}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-foreground group-hover:text-foreground/80">
-                  {user?.displayName || 'Usuário'}
-                </p>
-                <button
-                  onClick={logout}
-                  className="text-xs font-medium text-muted-foreground hover:text-foreground"
-                >
-                  Sair
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </header>
 
       {/* Main content */}
-      <div className="flex flex-1 flex-col lg:pl-64">
-        <main className="flex-1 pb-8">
-          <Outlet />
-        </main>
-      </div>
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Outlet />
+      </main>
     </div>
   );
 }

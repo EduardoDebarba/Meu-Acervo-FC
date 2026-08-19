@@ -13,14 +13,12 @@ export function Login() {
   return (
     <div className="flex min-h-screen flex-col justify-center bg-background py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-foreground">
-            <Shirt className="h-8 w-8 text-background" />
-          </div>
+        <div className="flex justify-center items-center gap-4">
+          <img src="/logo.png" alt="Logo Meu Acervo FC" className="h-16 w-16 rounded-full" />
+          <h2 className="text-center text-3xl font-bold tracking-tight text-foreground">
+            Meu Acervo FC
+          </h2>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-foreground">
-          Meu Armário
-        </h2>
         <p className="mt-2 text-center text-sm text-muted-foreground">
           Gerencie sua coleção de camisas de futebol
         </p>

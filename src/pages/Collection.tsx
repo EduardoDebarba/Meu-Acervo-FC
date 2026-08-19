@@ -56,7 +56,7 @@ export function Collection() {
   }
 
   return (
-    <div className="p-8">
+    <div className="w-full">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold text-foreground">Minha Coleção</h1>
         <Link

@@ -196,7 +196,7 @@ export function Dashboard() {
     }));
 
   return (
-    <div className="p-8">
+    <div className="w-full">
       <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 items-end">
         <h1 className="text-3xl font-bold text-foreground md:col-span-2">Dashboard</h1>
         
