@@ -192,8 +192,40 @@ export function Dashboard() {
     .slice(0, 5)
     .map((shirt, index) => ({
       name: `${shirt.team} ${shirt.season}${"\u200B".repeat(index)}`,
-      price: shirt.price
+      cleanName: `${shirt.team} ${shirt.season}`,
+      price: shirt.price,
+      imageUrl: shirt.imageUrls && shirt.imageUrls.length > 0 ? shirt.imageUrls[0] : null,
+      imageBgColor: shirt.imageBgColor || '#FFFFFF'
     }));
+
+  const CustomExpensiveTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="rounded-lg border border-border bg-card p-3 shadow-md z-50 min-w-[120px]">
+          {data.imageUrl ? (
+            <div 
+              className="mb-3 flex h-24 w-full items-center justify-center overflow-hidden rounded-md"
+              style={{ backgroundColor: data.imageBgColor }}
+            >
+              <img
+                src={data.imageUrl}
+                alt={data.cleanName}
+                className="h-full w-full object-contain"
+              />
+            </div>
+          ) : (
+            <div className="mb-3 flex h-24 w-full items-center justify-center rounded-md bg-muted">
+              <span className="text-xs text-muted-foreground">Sem imagem</span>
+            </div>
+          )}
+          <p className="font-medium text-foreground text-sm mb-1">{data.cleanName}</p>
+          <p className="font-bold text-primary text-sm">R$ {data.price}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="w-full">
@@ -515,9 +547,7 @@ export function Dashboard() {
                   <YAxis tickFormatter={(value) => `R$ ${value}`} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
                     cursor={{ fill: 'var(--muted)' }} 
-                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
-                    itemStyle={{ color: 'var(--foreground)' }}
-                    formatter={(value: any) => [`R$ ${value}`, 'Preço']} 
+                    content={<CustomExpensiveTooltip />}
                   />
                   <Bar dataKey="price" fill="currentColor" className="fill-primary" radius={[4, 4, 0, 0]} />
                 </BarChart>
