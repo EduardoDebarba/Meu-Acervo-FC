@@ -1,0 +1,137 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: shirts
+    // Document ID: auto-generated
+    // Fields:
+    //   - userId: string (required)
+    //   - team: string (required, < 100 chars)
+    //   - season: string (required, < 50 chars)
+    //   - type: string (required, < 50 chars)
+    //   - brand: string (required, < 50 chars)
+    //   - size: string (required, < 20 chars)
+    //   - condition: string (required, < 50 chars)
+    //   - price: number (required, >= 0)
+    //   - purchaseDate: string (optional, < 50 chars)
+    //   - purchaseLocation: string (optional, < 100 chars)
+    //   - authenticityTag: string (optional, < 100 chars)
+    //   - autographed: boolean (optional)
+    //   - notes: string (optional, < 1000 chars)
+    //   - imageUrls: list of strings (optional, max 2 items)
+    //   - imageBgColor: string (optional, < 20 chars)
+    //   - isFavorite: boolean (optional)
+    //   - createdAt: number (required)
+    //
+    // Collection: wishlist
+    // Document ID: auto-generated
+    // Fields:
+    //   - userId: string (required)
+    //   - team: string (required, < 100 chars)
+    //   - season: string (required, < 50 chars)
+    //   - type: string (required, < 50 chars)
+    //   - brand: string (required, < 50 chars)
+    //   - estimatedPrice: number (required, >= 0)
+    //   - priority: string (required, < 50 chars)
+    //   - status: string (required, < 50 chars)
+    //   - referenceLink: string (optional, < 500 chars)
+    //   - notes: string (optional, < 1000 chars)
+    //   - imageUrls: list of strings (optional, max 2 items)
+    //   - imageBgColor: string (optional, < 20 chars)
+    //   - createdAt: number (required)
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    function isCreatingOwnDoc() {
+      return isAuthenticated() && request.auth.uid == request.resource.data.userId;
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function isValidString(field, maxLen) {
+      return !(field in request.resource.data) ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() <= maxLen);
+    }
+
+    function isValidRequiredString(field, maxLen) {
+      return (field in request.resource.data) &&
+             request.resource.data[field] is string &&
+             request.resource.data[field].size() > 0 &&
+             request.resource.data[field].size() <= maxLen;
+    }
+
+    function isValidNumber(field) {
+      return (field in request.resource.data) && request.resource.data[field] is number && request.resource.data[field] >= 0;
+    }
+
+    function isValidImageUrls(data) {
+      return !('imageUrls' in data) || (data.imageUrls is list && data.imageUrls.size() <= 3);
+    }
+
+    function isValidShirt(data) {
+      return hasRequiredFields(['userId', 'team', 'season', 'type', 'brand', 'size', 'condition', 'price', 'createdAt']) &&
+             isValidRequiredString('userId', 100) &&
+             isValidRequiredString('team', 100) &&
+             isValidRequiredString('season', 50) &&
+             isValidRequiredString('type', 50) &&
+             isValidRequiredString('brand', 50) &&
+             isValidRequiredString('size', 20) &&
+             isValidRequiredString('condition', 50) &&
+             isValidNumber('price') &&
+             data.createdAt is number &&
+             (!('purchaseDate' in data) || isValidString('purchaseDate', 50)) &&
+             (!('purchaseLocation' in data) || isValidString('purchaseLocation', 100)) &&
+             (!('authenticityTag' in data) || isValidString('authenticityTag', 100)) &&
+             (!('autographed' in data) || data.autographed is bool) &&
+             (!('autographDetails' in data) || isValidString('autographDetails', 100)) &&
+             (!('isCustomized' in data) || data.isCustomized is bool) &&
+             (!('customizationDetails' in data) || isValidString('customizationDetails', 100)) &&
+             (!('notes' in data) || isValidString('notes', 1000)) &&
+             (!('imageBgColor' in data) || isValidString('imageBgColor', 20)) &&
+             isValidImageUrls(data) &&
+             (!('isFavorite' in data) || data.isFavorite is bool);
+    }
+
+    function isValidWishlistShirt(data) {
+      return hasRequiredFields(['userId', 'team', 'season', 'type', 'brand', 'createdAt']) &&
+             isValidRequiredString('userId', 100) &&
+             isValidRequiredString('team', 100) &&
+             isValidRequiredString('season', 50) &&
+             isValidRequiredString('type', 50) &&
+             isValidRequiredString('brand', 50) &&
+             data.createdAt is number &&
+             (!('notes' in data) || isValidString('notes', 1000)) &&
+             (!('imageBgColor' in data) || isValidString('imageBgColor', 20)) &&
+             isValidImageUrls(data);
+    }
+
+    match /shirts/{shirtId} {
+      allow read: if isDocOwner();
+      allow create: if isCreatingOwnDoc() && isValidShirt(request.resource.data);
+      allow update: if isDocOwner() && isCreatingOwnDoc() && isValidShirt(request.resource.data) && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isDocOwner();
+    }
+
+    match /wishlist/{wishlistId} {
+      allow read: if isDocOwner();
+      allow create: if isCreatingOwnDoc() && isValidWishlistShirt(request.resource.data);
+      allow update: if isDocOwner() && isCreatingOwnDoc() && isValidWishlistShirt(request.resource.data) && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isDocOwner();
+    }
+  }
+}
