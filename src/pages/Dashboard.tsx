@@ -190,8 +190,8 @@ export function Dashboard() {
     .filter(shirt => shirt.price && shirt.price > 0)
     .sort((a, b) => (b.price || 0) - (a.price || 0))
     .slice(0, 5)
-    .map(shirt => ({
-      name: `${shirt.team} ${shirt.season}`,
+    .map((shirt, index) => ({
+      name: `${shirt.team} ${shirt.season}${"\u200B".repeat(index)}`,
       price: shirt.price
     }));
 
@@ -327,10 +327,15 @@ export function Dashboard() {
             {teamData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={teamData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={100} />
-                  <Tooltip cursor={{ fill: 'transparent' }} formatter={(value: any) => [value, 'Quantidade']} />
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" />
+                  <XAxis type="number" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis dataKey="name" type="category" width={100} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{ fill: 'var(--muted)' }} 
+                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+                    itemStyle={{ color: 'var(--foreground)' }}
+                    formatter={(value: any) => [value, 'Quantidade']} 
+                  />
                   <Bar dataKey="value" fill="currentColor" className="fill-primary" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -348,10 +353,15 @@ export function Dashboard() {
             {brandData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={brandData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip cursor={{ fill: 'transparent' }} formatter={(value: any) => [value, 'Quantidade']} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                  <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis allowDecimals={false} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{ fill: 'var(--muted)' }} 
+                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+                    itemStyle={{ color: 'var(--foreground)' }}
+                    formatter={(value: any) => [value, 'Quantidade']} 
+                  />
                   <Bar dataKey="value" fill="currentColor" className="fill-primary" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -369,10 +379,15 @@ export function Dashboard() {
             {yearData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={yearData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip cursor={false} formatter={(value: any) => [value, 'Quantidade']} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                  <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis allowDecimals={false} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{ stroke: 'var(--muted)', strokeWidth: 2 }} 
+                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+                    itemStyle={{ color: 'var(--foreground)' }}
+                    formatter={(value: any) => [value, 'Quantidade']} 
+                  />
                   <Line type="monotone" dataKey="value" stroke="currentColor" className="stroke-primary" strokeWidth={2} dot={{ r: 4, fill: "currentColor", className: "fill-primary" }} activeDot={{ r: 6 }} />
                 </LineChart>
               </ResponsiveContainer>
@@ -390,10 +405,15 @@ export function Dashboard() {
             {totalSpendingByYearData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={totalSpendingByYearData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" />
-                  <YAxis tickFormatter={(value) => `R$ ${value}`} />
-                  <Tooltip cursor={{ fill: 'transparent' }} formatter={(value: any) => [`R$ ${value}`, 'Total']} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                  <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis tickFormatter={(value) => `R$ ${value}`} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{ fill: 'var(--muted)' }} 
+                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+                    itemStyle={{ color: 'var(--foreground)' }}
+                    formatter={(value: any) => [`R$ ${value}`, 'Total']} 
+                  />
                   <Bar dataKey="total" fill="currentColor" className="fill-primary" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -411,10 +431,16 @@ export function Dashboard() {
             {evolutionData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={evolutionData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="date" tickFormatter={(val) => new Date(val).getFullYear().toString()} />
-                  <YAxis />
-                  <Tooltip cursor={false} labelFormatter={(val) => new Date(val).toLocaleDateString('pt-BR')} formatter={(value: any) => [value, 'Quantidade']} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                  <XAxis dataKey="date" tickFormatter={(val) => new Date(val).getFullYear().toString()} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{ stroke: 'var(--muted)', strokeWidth: 2 }} 
+                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+                    itemStyle={{ color: 'var(--foreground)' }}
+                    labelFormatter={(val) => new Date(val).toLocaleDateString('pt-BR')} 
+                    formatter={(value: any) => [value, 'Quantidade']} 
+                  />
                   <Line type="stepAfter" dataKey="count" stroke="currentColor" className="stroke-primary" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
@@ -432,10 +458,15 @@ export function Dashboard() {
             {typeData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={typeData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={100} />
-                  <Tooltip cursor={{ fill: 'transparent' }} formatter={(value: any) => [value, 'Quantidade']} />
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" />
+                  <XAxis type="number" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis dataKey="name" type="category" width={100} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{ fill: 'var(--muted)' }} 
+                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+                    itemStyle={{ color: 'var(--foreground)' }}
+                    formatter={(value: any) => [value, 'Quantidade']} 
+                  />
                   <Bar dataKey="value" fill="currentColor" className="fill-primary" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -453,10 +484,15 @@ export function Dashboard() {
             {locationData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={locationData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                  <XAxis type="number" allowDecimals={false} />
-                  <YAxis dataKey="name" type="category" width={100} />
-                  <Tooltip cursor={{ fill: 'transparent' }} formatter={(value: any) => [value, 'Quantidade']} />
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" />
+                  <XAxis type="number" allowDecimals={false} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis dataKey="name" type="category" width={100} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{ fill: 'var(--muted)' }} 
+                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+                    itemStyle={{ color: 'var(--foreground)' }}
+                    formatter={(value: any) => [value, 'Quantidade']} 
+                  />
                   <Bar dataKey="value" fill="currentColor" className="fill-primary" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -474,10 +510,15 @@ export function Dashboard() {
             {topExpensiveShirts.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topExpensiveShirts} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                  <YAxis tickFormatter={(value) => `R$ ${value}`} />
-                  <Tooltip cursor={{ fill: 'transparent' }} formatter={(value: any) => [`R$ ${value}`, 'Preço']} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                  <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} tickLine={false} axisLine={false} />
+                  <YAxis tickFormatter={(value) => `R$ ${value}`} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{ fill: 'var(--muted)' }} 
+                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+                    itemStyle={{ color: 'var(--foreground)' }}
+                    formatter={(value: any) => [`R$ ${value}`, 'Preço']} 
+                  />
                   <Bar dataKey="price" fill="currentColor" className="fill-primary" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
