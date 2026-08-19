@@ -235,7 +235,7 @@ export function Dashboard() {
         <div className="w-full">
           <Popover open={teamOpen} onOpenChange={setTeamOpen}>
             <PopoverTrigger
-              className={cn(buttonVariants({ variant: "outline" }), "w-full justify-between font-normal")}
+              className={cn(buttonVariants({ variant: "outline" }), "w-full justify-between font-normal h-10")}
               role="combobox"
             >
               {selectedTeam === 'all'
