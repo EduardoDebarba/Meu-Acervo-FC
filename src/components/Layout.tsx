@@ -55,12 +55,6 @@ export function Layout() {
             <ThemeToggle />
             
             <div className="hidden md:flex items-center gap-3 border-l border-border pl-4 ml-2">
-              <img
-                className="h-8 w-8 rounded-full"
-                src={user?.photoURL || 'https://via.placeholder.com/150'}
-                alt=""
-                referrerPolicy="no-referrer"
-              />
               <span className="text-sm font-medium text-foreground max-w-[120px] truncate">
                 {user?.displayName || 'Usuário'}
               </span>
@@ -112,12 +106,6 @@ export function Layout() {
               })}
               <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <img
-                    className="h-10 w-10 rounded-full"
-                    src={user?.photoURL || 'https://via.placeholder.com/150'}
-                    alt=""
-                    referrerPolicy="no-referrer"
-                  />
                   <span className="text-sm font-medium text-foreground">
                     {user?.displayName || 'Usuário'}
                   </span>
