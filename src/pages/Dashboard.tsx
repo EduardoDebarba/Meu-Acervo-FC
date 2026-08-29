@@ -4,6 +4,7 @@ import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { Shirt, WishlistShirt, OperationType } from '../types';
 import { handleFirestoreError } from '../lib/utils';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
@@ -144,23 +145,24 @@ export function Dashboard() {
     acc[shirt.team] = (acc[shirt.team] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  const teamData = Object.entries(shirtsByTeam)
+  const teamDataFull = Object.entries(shirtsByTeam)
     .map(([name, value]) => ({ name, value: value as number }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 5);
+    .sort((a, b) => b.value - a.value);
+  const teamData = teamDataFull.slice(0, 5);
 
   const shirtsByBrand = filteredShirts.reduce((acc, shirt) => {
     acc[shirt.brand] = (acc[shirt.brand] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
   const totalBrands = Object.values(shirtsByBrand).reduce((a, b) => a + b, 0);
-  const brandData = Object.entries(shirtsByBrand)
+  const brandDataFull = Object.entries(shirtsByBrand)
     .map(([name, value]) => ({ 
       name, 
       value: value as number,
       percentage: totalBrands > 0 ? Number(((value as number / totalBrands) * 100).toFixed(1)) : 0
     }))
     .sort((a, b) => b.value - a.value);
+  const brandData = brandDataFull.slice(0, 5);
 
   const shirtsByYear = filteredShirts.reduce((acc, shirt) => {
     if (shirt.purchaseDate) {
@@ -169,9 +171,10 @@ export function Dashboard() {
     }
     return acc;
   }, {} as Record<string, number>);
-  const yearData = Object.entries(shirtsByYear)
+  const yearDataFull = Object.entries(shirtsByYear)
     .map(([name, value]) => ({ name, value }))
     .sort((a, b) => a.name.localeCompare(b.name));
+  const yearData = yearDataFull.slice(-5);
 
   const spendingByYear = filteredShirts.reduce((acc, shirt) => {
     if (shirt.purchaseDate && shirt.price) {
@@ -185,12 +188,13 @@ export function Dashboard() {
     return acc;
   }, {} as Record<string, { total: number, count: number }>);
 
-  const totalSpendingByYearData = Object.entries(spendingByYear)
+  const totalSpendingByYearDataFull = Object.entries(spendingByYear)
     .map(([name, data]) => ({
       name,
       total: Number(data.total.toFixed(2))
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
+  const totalSpendingByYearData = totalSpendingByYearDataFull.slice(-5);
 
   // Evolution over time (cumulative count by purchase date)
   const sortedByDate = [...filteredShirts]
@@ -211,11 +215,12 @@ export function Dashboard() {
     acc[shirt.type] = (acc[shirt.type] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  const typeData = Object.entries(shirtsByType)
+  const typeDataFull = Object.entries(shirtsByType)
     .map(([name, value]) => ({ name, value: value as number }))
     .sort((a, b) => b.value - a.value);
+  const typeData = typeDataFull.slice(0, 5);
 
-  // Locations (Top 5)
+  // Locations
   const shirtsByLocation = filteredShirts.reduce((acc, shirt) => {
     if (shirt.purchaseLocation && shirt.purchaseLocation.trim() !== '') {
       const loc = shirt.purchaseLocation.trim();
@@ -223,16 +228,15 @@ export function Dashboard() {
     }
     return acc;
   }, {} as Record<string, number>);
-  const locationData = Object.entries(shirtsByLocation)
+  const locationDataFull = Object.entries(shirtsByLocation)
     .map(([name, value]) => ({ name, value: value as number }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 5);
+    .sort((a, b) => b.value - a.value);
+  const locationData = locationDataFull.slice(0, 5);
 
   // Top 5 Most Expensive Shirts
-  const topExpensiveShirts = [...filteredShirts]
+  const topExpensiveShirtsFull = [...filteredShirts]
     .filter(shirt => shirt.price && shirt.price > 0)
     .sort((a, b) => (b.price || 0) - (a.price || 0))
-    .slice(0, 5)
     .map((shirt, index) => ({
       name: `${shirt.team} ${shirt.season}${"\u200B".repeat(index)}`,
       cleanName: `${shirt.team} ${shirt.season}`,
@@ -240,6 +244,7 @@ export function Dashboard() {
       imageUrl: shirt.imageUrls && shirt.imageUrls.length > 0 ? shirt.imageUrls[0] : null,
       imageBgColor: shirt.imageBgColor || '#FFFFFF'
     }));
+  const topExpensiveShirts = topExpensiveShirtsFull.slice(0, 5);
 
   const CustomExpensiveTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -395,8 +400,24 @@ export function Dashboard() {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
-          <CardHeader>
-            <CardTitle>Camisas por Time (Top 5)</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle>Camisas por Time</CardTitle>
+            <Dialog>
+              <DialogTrigger className={buttonVariants({ variant: "outline", size: "sm" })}>Ver Tudo</DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Todas as Camisas por Time</DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[60vh] overflow-y-auto space-y-4 pt-4 pr-2">
+                  {teamDataFull.map((item, i) => (
+                    <div key={i} className="flex justify-between items-center border-b pb-2 last:border-0">
+                      <span className="font-medium text-sm">{item.name}</span>
+                      <span className="text-muted-foreground text-sm">{item.value} camisas</span>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardHeader>
           <CardContent className="h-[300px]">
             {teamData.length > 0 ? (
@@ -421,8 +442,24 @@ export function Dashboard() {
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle>Distribuição por Marca</CardTitle>
+            <Dialog>
+              <DialogTrigger className={buttonVariants({ variant: "outline", size: "sm" })}>Ver Tudo</DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Todas as Marcas</DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[60vh] overflow-y-auto space-y-4 pt-4 pr-2">
+                  {brandDataFull.map((item, i) => (
+                    <div key={i} className="flex justify-between items-center border-b pb-2 last:border-0">
+                      <span className="font-medium text-sm">{item.name}</span>
+                      <span className="text-muted-foreground text-sm">{item.value} camisas ({item.percentage}%)</span>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardHeader>
           <CardContent className="h-[300px]">
             {brandData.length > 0 ? (
@@ -482,8 +519,24 @@ export function Dashboard() {
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle>Total Gasto por Ano</CardTitle>
+            <Dialog>
+              <DialogTrigger className={buttonVariants({ variant: "outline", size: "sm" })}>Ver Tudo</DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Total Gasto por Ano</DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[60vh] overflow-y-auto space-y-4 pt-4 pr-2">
+                  {[...totalSpendingByYearDataFull].reverse().map((item, i) => (
+                    <div key={i} className="flex justify-between items-center border-b pb-2 last:border-0">
+                      <span className="font-medium text-sm">{item.name}</span>
+                      <span className="text-muted-foreground text-sm">R$ {item.total.toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardHeader>
           <CardContent className="h-[300px]">
             {totalSpendingByYearData.length > 0 ? (
@@ -544,8 +597,24 @@ export function Dashboard() {
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle>Tipos de Camisa</CardTitle>
+            <Dialog>
+              <DialogTrigger className={buttonVariants({ variant: "outline", size: "sm" })}>Ver Tudo</DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Todos os Tipos</DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[60vh] overflow-y-auto space-y-4 pt-4 pr-2">
+                  {typeDataFull.map((item, i) => (
+                    <div key={i} className="flex justify-between items-center border-b pb-2 last:border-0">
+                      <span className="font-medium text-sm">{item.name}</span>
+                      <span className="text-muted-foreground text-sm">{item.value} camisas</span>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardHeader>
           <CardContent className="h-[300px]">
             {typeData.length > 0 ? (
@@ -570,8 +639,24 @@ export function Dashboard() {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Locais de Compra (Top 5)</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle>Locais de Compra</CardTitle>
+            <Dialog>
+              <DialogTrigger className={buttonVariants({ variant: "outline", size: "sm" })}>Ver Tudo</DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Locais de Compra</DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[60vh] overflow-y-auto space-y-4 pt-4 pr-2">
+                  {locationDataFull.map((item, i) => (
+                    <div key={i} className="flex justify-between items-center border-b pb-2 last:border-0">
+                      <span className="font-medium text-sm">{item.name}</span>
+                      <span className="text-muted-foreground text-sm">{item.value} compras</span>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardHeader>
           <CardContent className="h-[300px]">
             {locationData.length > 0 ? (
@@ -596,8 +681,24 @@ export function Dashboard() {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Camisas Mais Caras (Top 5)</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle>Camisas Mais Caras</CardTitle>
+            <Dialog>
+              <DialogTrigger className={buttonVariants({ variant: "outline", size: "sm" })}>Ver Tudo</DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Ranking de Valores</DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[60vh] overflow-y-auto space-y-4 pt-4 pr-2">
+                  {topExpensiveShirtsFull.map((item, i) => (
+                    <div key={i} className="flex justify-between items-center border-b pb-2 last:border-0">
+                      <span className="font-medium text-sm">{i + 1}º - {item.cleanName}</span>
+                      <span className="text-muted-foreground text-sm">R$ {item.price?.toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardHeader>
           <CardContent className="h-[300px]">
             {topExpensiveShirts.length > 0 ? (
