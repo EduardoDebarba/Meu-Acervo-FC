@@ -31,6 +31,32 @@ function useIsMobile() {
   return isMobile;
 }
 
+const CustomCurrencyTick = ({ x, y, payload, isXAxis }: any) => {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        x={0}
+        y={0}
+        textAnchor={isXAxis ? 'middle' : 'end'}
+        fill="var(--muted-foreground)"
+        fontSize={12}
+      >
+        {isXAxis ? (
+          <>
+            <tspan x={0} dy="12">R$</tspan>
+            <tspan x={0} dy="14">{payload.value}</tspan>
+          </>
+        ) : (
+          <>
+            <tspan x={-5} dy="-4">R$</tspan>
+            <tspan x={-5} dy="14">{payload.value}</tspan>
+          </>
+        )}
+      </text>
+    </g>
+  );
+};
+
 export function Dashboard() {
   const isMobile = useIsMobile();
   const { user } = useAuth();
@@ -375,10 +401,10 @@ export function Dashboard() {
           <CardContent className="h-[300px]">
             {teamData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={teamData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={teamData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" />
                   <XAxis type="number" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis dataKey="name" type="category" width={100} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis dataKey="name" type="category" width={85} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
                     cursor={{ fill: 'var(--muted)' }} 
                     contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
@@ -401,17 +427,17 @@ export function Dashboard() {
           <CardContent className="h-[300px]">
             {brandData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={brandData} layout={isMobile ? "vertical" : "horizontal"} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={brandData} layout={isMobile ? "vertical" : "horizontal"} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={!isMobile} vertical={isMobile} stroke="var(--border)" />
                   {isMobile ? (
                     <>
                       <XAxis type="number" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis dataKey="name" type="category" width={100} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis dataKey="name" type="category" width={80} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                     </>
                   ) : (
                     <>
                       <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis allowDecimals={false} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis allowDecimals={false} width={30} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                     </>
                   )}
                   <Tooltip 
@@ -436,10 +462,10 @@ export function Dashboard() {
           <CardContent className="h-[300px]">
             {yearData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={yearData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <LineChart data={yearData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                   <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis allowDecimals={false} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis allowDecimals={false} width={30} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
                     cursor={{ stroke: 'var(--muted)', strokeWidth: 2 }} 
                     contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
@@ -462,17 +488,17 @@ export function Dashboard() {
           <CardContent className="h-[300px]">
             {totalSpendingByYearData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={totalSpendingByYearData} layout={isMobile ? "vertical" : "horizontal"} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={totalSpendingByYearData} layout={isMobile ? "vertical" : "horizontal"} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={!isMobile} vertical={isMobile} stroke="var(--border)" />
                   {isMobile ? (
                     <>
-                      <XAxis type="number" tickFormatter={(value) => `R$ ${value}`} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis dataKey="name" type="category" width={100} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                      <XAxis type="number" tick={<CustomCurrencyTick isXAxis={true} />} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis dataKey="name" type="category" width={40} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                     </>
                   ) : (
                     <>
                       <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis tickFormatter={(value) => `R$ ${value}`} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis tick={<CustomCurrencyTick isXAxis={false} />} width={45} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                     </>
                   )}
                   <Tooltip 
@@ -497,10 +523,10 @@ export function Dashboard() {
           <CardContent className="h-[300px]">
             {evolutionData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={evolutionData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <LineChart data={evolutionData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                   <XAxis dataKey="date" tickFormatter={(val) => new Date(val).getFullYear().toString()} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis width={30} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
                     cursor={{ stroke: 'var(--muted)', strokeWidth: 2 }} 
                     contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
@@ -524,10 +550,10 @@ export function Dashboard() {
           <CardContent className="h-[300px]">
             {typeData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={typeData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={typeData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" />
                   <XAxis type="number" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis dataKey="name" type="category" width={100} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis dataKey="name" type="category" width={85} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
                     cursor={{ fill: 'var(--muted)' }} 
                     contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
@@ -550,10 +576,10 @@ export function Dashboard() {
           <CardContent className="h-[300px]">
             {locationData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={locationData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={locationData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" />
                   <XAxis type="number" allowDecimals={false} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis dataKey="name" type="category" width={100} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis dataKey="name" type="category" width={80} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
                     cursor={{ fill: 'var(--muted)' }} 
                     contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
@@ -576,10 +602,10 @@ export function Dashboard() {
           <CardContent className="h-[300px]">
             {topExpensiveShirts.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={topExpensiveShirts} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={topExpensiveShirts} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border)" />
-                  <XAxis type="number" tickFormatter={(value) => `R$ ${value}`} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis dataKey="name" type="category" width={120} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <XAxis type="number" tick={<CustomCurrencyTick isXAxis={true} />} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis dataKey="name" type="category" width={90} stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
                     cursor={{ fill: 'var(--muted)' }} 
                     content={<CustomExpensiveTooltip />}
