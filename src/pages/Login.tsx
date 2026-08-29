@@ -13,8 +13,8 @@ export function Login() {
   return (
     <div className="flex min-h-screen flex-col justify-center bg-background py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center items-center gap-4">
-          <img src="/logo.png" alt="Logo Meu Acervo FC" className="h-16 w-16 rounded-full" />
+        <div className="flex flex-col justify-center items-center gap-4">
+          <img src="/logo.png" alt="Logo Meu Acervo FC" className="h-24 w-24 rounded-full" />
           <h2 className="text-center text-3xl font-bold tracking-tight text-foreground">
             Meu Acervo FC
           </h2>
@@ -24,13 +24,11 @@ export function Login() {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-card px-4 py-8 shadow sm:rounded-lg sm:px-10 border border-border">
-          <div className="space-y-6">
-            <button
-              onClick={signInWithGoogle}
-              className="flex w-full items-center justify-center gap-3 rounded-md border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground shadow-sm hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
-            >
+      <div className="mt-8 px-4 sm:px-0 sm:mx-auto sm:w-full sm:max-w-md">
+        <button
+          onClick={signInWithGoogle}
+          className="flex w-full items-center justify-center gap-3 rounded-md border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground shadow-sm hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+        >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -51,9 +49,7 @@ export function Login() {
                 <path d="M1 1h22v22H1z" fill="none" />
               </svg>
               Entrar com Google
-            </button>
-          </div>
-        </div>
+        </button>
       </div>
     </div>
   );
