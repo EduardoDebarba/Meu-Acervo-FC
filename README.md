@@ -1,13 +1,13 @@
-# 👕 Dashboard de Coleção de Camisas
+# Dashboard de Coleção de Camisas
 
 Um painel interativo e moderno para gerenciar, visualizar e analisar uma coleção de camisas de futebol. Desenvolvido com as melhores tecnologias do ecossistema front-end, este dashboard oferece métricas detalhadas e gráficos sobre suas aquisições.
 
-## 🔗 Preview (Demonstração)
+## Preview (Demonstração)
 
 Acesse o projeto rodando ao vivo através do link abaixo:
-👉 **[https://meuacervofc.netlify.app/](https://meuacervofc.netlify.app/)**
+**[https://meuacervofc.netlify.app/](https://meuacervofc.netlify.app/)**
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - **Métricas Principais:** Acompanhe rapidamente o total de camisas, tamanho da sua *wishlist*, valor total investido e a data da última aquisição.
 - **Gráficos Interativos:** Visualização de dados dinâmicos utilizando a biblioteca Recharts.
@@ -20,7 +20,7 @@ Acesse o projeto rodando ao vivo através do link abaixo:
 - **Design Polido e Responsivo:** Interface construída com Tailwind CSS e Shadcn UI, adaptável a diferentes tamanhos de tela, com estilização customizada de barras de rolagem e interações (cursores, hovers).
 - **Suporte a Temas:** Estrutura pronta para modo claro (Light Mode) e modo escuro (Dark Mode).
 
-## 🚀 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **[React 18](https://react.dev/)** - Biblioteca principal para construção da interface
 - **[Vite](https://vitejs.dev/)** - Bundler e servidor de desenvolvimento super rápido
@@ -30,7 +30,7 @@ Acesse o projeto rodando ao vivo através do link abaixo:
 - **[Shadcn UI / Base UI](https://ui.shadcn.com/)** - Componentes de interface acessíveis e altamente customizáveis
 - **[Lucide React](https://lucide.dev/)** - Pacote de ícones minimalistas e consistentes
 
-## 📦 Como rodar o projeto localmente
+## Como rodar o projeto localmente
 
 Siga os passos abaixo para rodar o projeto na sua máquina:
 
@@ -55,7 +55,7 @@ Siga os passos abaixo para rodar o projeto na sua máquina:
    ```
    Acesse a aplicação em `http://localhost:3000` (ou na porta indicada no terminal).
 
-## 🛠️ Scripts Disponíveis
+## Scripts Disponíveis
 
 No diretório do projeto, você pode rodar os seguintes comandos:
 
@@ -64,7 +64,7 @@ No diretório do projeto, você pode rodar os seguintes comandos:
 - `npm run preview` - Inicia um servidor local para testar a versão gerada no comando de build.
 - `npm run lint` - Executa a verificação de regras de código com o ESLint.
 
-## 🤝 Contribuições
+## Contribuições
 
 Contribuições são muito bem-vindas! Se você tiver uma ideia para melhorar o projeto:
 
