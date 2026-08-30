@@ -2,6 +2,11 @@
 
 Um painel interativo e moderno para gerenciar, visualizar e analisar uma coleção de camisas de futebol. Desenvolvido com as melhores tecnologias do ecossistema front-end, este dashboard oferece métricas detalhadas e gráficos sobre suas aquisições.
 
+## 🔗 Preview (Demonstração)
+
+Acesse o projeto rodando ao vivo através do link abaixo:
+👉 **[https://meuacervofc.netlify.app/](https://meuacervofc.netlify.app/)**
+
 ## ✨ Funcionalidades
 
 - **Métricas Principais:** Acompanhe rapidamente o total de camisas, tamanho da sua *wishlist*, valor total investido e a data da última aquisição.
